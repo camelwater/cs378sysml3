@@ -1,0 +1,9 @@
+numpy==1.26.4
+pandas==2.3.3
+scikit-learn==1.7.2
+ddsketch==3.0.1
+matplotlib==3.10.9
+SciencePlots==2.2.2
+fasteners==0.20
+pytest==9.1.1
+notebook==7.6.3
