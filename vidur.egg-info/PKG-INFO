@@ -1,0 +1,13 @@
+Metadata-Version: 2.4
+Name: vidur
+Version: 0.0.1
+Summary: A LLM inference cluster simulator
+Author: MSR-India Systems Group; Systems for AI Lab, Georgia Tech
+Keywords: vidur
+Requires-Python: >=3.10,<3.11
+License-File: LICENSE
+Dynamic: author
+Dynamic: keywords
+Dynamic: license-file
+Dynamic: requires-python
+Dynamic: summary
