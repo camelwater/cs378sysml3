@@ -28,7 +28,14 @@ class SpfReplicaScheduler(SarathiReplicaScheduler):
         long prompt eventually overtakes newer short ones.
         """
         # [Part 4] TODO: return the priority above.
-        raise NotImplementedError("Part 4: fill _priority")
+
+        # executing the formula given above
+        remaining_prompt = request.num_prefill_tokens - request.num_processed_prefill_tokens
+        seconds_waited = now - request.arrived_at
+        priority = remaining_prompt - self._config.aging_tokens_per_s * seconds_waited
+        return priority
+    
+        # raise NotImplementedError("Part 4: fill _priority")
         # END OF YOUR CODE
 
     def _order_waiting_queue(self) -> None:
@@ -37,5 +44,9 @@ class SpfReplicaScheduler(SarathiReplicaScheduler):
         Do not drop or copy requests.
         """
         # [Part 4] TODO: sort the waiting queue.
-        raise NotImplementedError("Part 4: fill _order_waiting_queue")
+
+        # sorting the request queue by the _priority(request, self._now)
+        self._request_queue.sort(key=lambda request: self._priority(request, self._now))
+
+        # raise NotImplementedError("Part 4: fill _order_waiting_queue")
         # END OF YOUR CODE
