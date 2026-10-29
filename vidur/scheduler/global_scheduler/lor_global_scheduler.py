@@ -29,6 +29,34 @@ class LORGlobalScheduler(BaseGlobalScheduler):
         # [Part 5] TODO: count each replica's outstanding requests, then
         # assign every request in self._request_queue (pop from the front).
         # Replica ids: self._replica_schedulers.keys().
-        raise NotImplementedError("Part 5: fill LOR schedule")
+
+        # count outstanding requests on each replica
+        counts = {}
+        for replica_id in self._replica_schedulers.keys():
+            counts[replica_id] = len(self.outstanding_requests(replica_id))
+
+        while self._request_queue:
+            # remove oldest waiting request
+            request = self._request_queue.pop(0)
+
+            # find replica with the fewest outstanding requests
+            replica_id = None
+            for id in counts:
+                # starting with first replica as best choice
+                if replica_id is None:
+                    replica_id = id
+                # preferring a replica with fewer outstanding requests
+                elif counts[id] < counts[replica_id]:
+                    replica_id = id
+                # if a tie is found, prefer the lower replica id
+                elif counts[id] == counts[replica_id] and id < replica_id:
+                    replica_id = id
+
+            # save for the simulator 
+            request_mapping.append((replica_id, request))
+            # update local count
+            counts[replica_id] += 1
+
+        # raise NotImplementedError("Part 5: fill LOR schedule")
         # END OF YOUR CODE
         return request_mapping

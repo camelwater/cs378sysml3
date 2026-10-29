@@ -31,6 +31,36 @@ class LOTGlobalScheduler(BaseGlobalScheduler):
         # [Part 5] TODO: sum each replica's outstanding work, then assign
         # every request in self._request_queue (pop from the front).
         # Replica ids: self._replica_schedulers.keys().
-        raise NotImplementedError("Part 5: fill LOT schedule")
+
+        # calculate sum of work on each replica
+        work = {}
+        for replica_id in self._replica_schedulers.keys():
+            work[replica_id] = 0
+            for request in self.outstanding_requests(replica_id):
+                work[replica_id] += request.total_tokens - request.num_processed_tokens
+
+        while self._request_queue:
+            # remove oldest waiting request
+            request = self._request_queue.pop(0)
+        
+            # find replica with the least remaining work
+            replica_id = None
+            for id in work:
+                # starting with first replica as best choice
+                if replica_id is None:
+                    replica_id = id
+                # preferring a replica with less remaining work
+                elif work[id] < work[replica_id]:
+                    replica_id = id
+                # if a tie is found, prefer the lower replica id
+                elif work[id] == work[replica_id] and id < replica_id:
+                    replica_id = id
+        
+            # save for the simulator 
+            request_mapping.append((replica_id, request))
+            # inclding this request's work when assigning next request
+            work[replica_id] += request.total_tokens - request.num_processed_tokens
+        
+        # raise NotImplementedError("Part 5: fill LOT schedule")
         # END OF YOUR CODE
         return request_mapping
